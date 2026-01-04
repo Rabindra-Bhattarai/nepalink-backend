@@ -1,7 +1,6 @@
-import { Request, Response } from "express";
-import { UserService } from "../services/user.service";
 import { CreateUserDTO, LoginUserDTO } from "../dtos/user.dto";
-import { issue } from "zod/v4/core/util.cjs";
+import { UserService } from "../services/user.service";
+import { Request, Response } from "express";
 
 const userService = new UserService();
 
