@@ -2,11 +2,15 @@ import z from "zod";
 import { UserSchema } from "../types/user.type";
 
 export const CreateUserDTO = UserSchema.pick({
+  userid: true,
+  name: true,
+  email: true,
+  phone: true,
+  password: true,
+  username: true,
   firstName: true,
   lastName: true,
-  email: true,
-  username: true,
-  password: true,
+  role: true,
 }).extend({
   confirmPassword: z.string().min(6),
 }).refine(
