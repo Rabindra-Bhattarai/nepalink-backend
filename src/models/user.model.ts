@@ -1,26 +1,23 @@
 import mongoose, { Document, Schema } from "mongoose";
-import { UserType } from "../types/user.type";
 
-const UserSchema: Schema = new Schema<UserType>(
+const UserSchema: Schema = new Schema(
   {
+    name: { type: String, required: true },       // matches Dart `name`
     email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-    username: { type: String, required: true, unique: true },
-    firstName: { type: String },
-    lastName: { type: String },
-    role: {
-      type: String,
-      enum: ["user", "admin"],
-      default: "user",
-    },
+    phone: { type: String, required: true },      // matches Dart `phone`
+    password: { type: String, required: true },   // matches Dart `password`
   },
   {
     timestamps: true,
   }
 );
 
-export interface IUser extends UserType, Document {
-  _id: mongoose.Types.ObjectId;
+export interface IUser extends Document {
+  _id: mongoose.Types.ObjectId;  // maps to Dart `id`
+  name: string;
+  email: string;
+  phone: string;
+  password: string;
   createdAt: Date;
   updatedAt: Date;
 }
