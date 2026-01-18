@@ -61,8 +61,16 @@ app.get("/", (req: Request, res: Response) => {
 connectDatabase();
 
 // Use the PORT from config (make sure it's a number)
+// app.listen(Number(PORT), () => {
+//   console.log(`Server running at http://192.168.1.4:${PORT}`);
+// });
+
 app.listen(Number(PORT), () => {
-  console.log(`Server running at http://192.168.1.4:${PORT}`);
+  console.log(`Server running at http://localhost:${PORT}`);
 });
+
+
+
+
 
 export default app;
