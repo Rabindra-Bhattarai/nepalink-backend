@@ -2,10 +2,11 @@ import mongoose, { Document, Schema } from "mongoose";
 
 const UserSchema: Schema = new Schema(
   {
-    name: { type: String, required: true },       // matches Dart `name`
+    name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
-    phone: { type: String, required: true },      // matches Dart `phone`
-    password: { type: String, required: true },   // matches Dart `password`
+    phone: { type: String, required: true },
+    password: { type: String, required: true },
+    imageUrl: { type: String, default: "default-profile.png" }, // default image
   },
   {
     timestamps: true,
@@ -13,11 +14,12 @@ const UserSchema: Schema = new Schema(
 );
 
 export interface IUser extends Document {
-  _id: mongoose.Types.ObjectId;  // maps to Dart `id`
+  _id: mongoose.Types.ObjectId;
   name: string;
   email: string;
   phone: string;
   password: string;
+  imageUrl?: string;
   createdAt: Date;
   updatedAt: Date;
 }

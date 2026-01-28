@@ -58,3 +58,11 @@ export class AuthController {
     }
   }
 }
+
+
+///backend bata user ko data tanne controller ho yo
+
+//sir ko 35-B backend code
+//Service
+//auth controller
+//routes--> middleware haru ko kura

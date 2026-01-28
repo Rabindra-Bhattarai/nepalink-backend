@@ -59,4 +59,14 @@ export class UserService {
     const { password, ...userWithoutPassword } = user.toObject();
     return { token, user: userWithoutPassword };
   }
+
+  // ✅ NEW METHOD for profile image upload
+  async updateUserImage(userId: string, imageUrl: string) {
+    const updatedUser = await userRepository.updateUser(userId, { imageUrl });
+    if (!updatedUser) {
+      throw new HttpError(404, "User not found");
+    }
+    const { password, ...userWithoutPassword } = updatedUser.toObject();
+    return userWithoutPassword;
+  }
 }
