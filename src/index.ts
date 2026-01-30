@@ -31,7 +31,8 @@ connectDatabase();
 
 // Start server
 app.listen(Number(PORT), () => {
-  console.log(`Server running at http://10.125.49.214:${PORT}`);
+  // console.log(`Server running at http://192.168.1.8:${PORT}`);
+  console.log(`Server running at http://localhost:${PORT}`);
 });
 
 export default app;
