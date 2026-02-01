@@ -6,7 +6,12 @@ const UserSchema: Schema = new Schema(
     email: { type: String, required: true, unique: true },
     phone: { type: String, required: true },
     password: { type: String, required: true },
-    imageUrl: { type: String, default: "default-profile.png" }, // default image
+    imageUrl: { type: String, default: "default-profile.png" },
+    role: {
+      type: String,
+      enum: ["nurse", "member", "admin"],
+      default: "nurse", // existing users (Flutter) will be nurses by default
+    },
   },
   {
     timestamps: true,
@@ -20,6 +25,7 @@ export interface IUser extends Document {
   phone: string;
   password: string;
   imageUrl?: string;
+  role: "nurse" | "member" | "admin";
   createdAt: Date;
   updatedAt: Date;
 }
