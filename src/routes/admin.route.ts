@@ -2,26 +2,37 @@ import express from "express";
 import { uploads } from "../middlewares/upload.middleware";
 import { UserRepository } from "../repositories/user.repository";
 import { isAdmin } from "../middlewares/admin.middleware";
-import { UserModel } from "../models/user.model"; // needed for pagination
+import { UserModel } from "../models/user.model";
 
 const adminRouter = express.Router();
 const userRepository = new UserRepository();
 
-// Create user with image upload
+//  Create user (JSON or image upload)
 adminRouter.post("/users", isAdmin, uploads.single("photo"), async (req, res) => {
   try {
+    console.log("BODY:", req.body);
+    console.log("FILE:", req.file);
+
     const userData = req.body;
     if (req.file) {
       userData.imageUrl = req.file.filename;
     }
+
+    // Quick validation
+    if (!userData.name || !userData.email || !userData.role) {
+      return res.status(400).json({ success: false, message: "Missing required fields" });
+    }
+
     const newUser = await userRepository.createUser(userData);
     return res.status(201).json({ success: true, data: newUser });
   } catch (error: any) {
+    console.error("Create user error:", error); // ✅ log the actual error
     return res.status(500).json({ success: false, message: error.message });
   }
 });
 
-// Get all users with pagination + filtering
+
+//  Get all users with pagination + optional filters
 adminRouter.get("/users", isAdmin, async (req, res) => {
   try {
     const page = parseInt(req.query.page as string) || 1;
@@ -38,19 +49,13 @@ adminRouter.get("/users", isAdmin, async (req, res) => {
     const users = await UserModel.find(query).skip(skip).limit(limit);
     const total = await UserModel.countDocuments(query);
 
-    return res.status(200).json({
-      success: true,
-      data: users,
-      total,
-      page,
-      limit,
-    });
+    return res.status(200).json({ success: true, data: users, total, page, limit });
   } catch (error: any) {
     return res.status(500).json({ success: false, message: error.message });
   }
 });
 
-// Get single user
+//  Get single user
 adminRouter.get("/users/:id", isAdmin, async (req, res) => {
   try {
     const user = await userRepository.getUserById(req.params.id);
@@ -61,7 +66,7 @@ adminRouter.get("/users/:id", isAdmin, async (req, res) => {
   }
 });
 
-// Update user with optional image
+// Update user (JSON or image upload)
 adminRouter.put("/users/:id", isAdmin, uploads.single("photo"), async (req, res) => {
   try {
     const updateData = req.body;
@@ -76,7 +81,7 @@ adminRouter.put("/users/:id", isAdmin, uploads.single("photo"), async (req, res)
   }
 });
 
-// Delete user
+//  Delete user
 adminRouter.delete("/users/:id", isAdmin, async (req, res) => {
   try {
     const deleted = await userRepository.deleteUser(req.params.id);
