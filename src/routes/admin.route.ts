@@ -21,15 +21,22 @@ adminRouter.post("/users", isAdmin, uploads.single("photo"), async (req, res) =>
   }
 });
 
-// Get all users with pagination
+// Get all users with pagination + filtering
 adminRouter.get("/users", isAdmin, async (req, res) => {
   try {
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
     const skip = (page - 1) * limit;
 
-    const users = await UserModel.find().skip(skip).limit(limit);
-    const total = await UserModel.countDocuments();
+    const role = req.query.role as string;
+    const name = req.query.name as string;
+
+    const query: any = {};
+    if (role) query.role = role;
+    if (name) query.name = new RegExp(name, "i"); // case-insensitive partial match
+
+    const users = await UserModel.find(query).skip(skip).limit(limit);
+    const total = await UserModel.countDocuments(query);
 
     return res.status(200).json({
       success: true,
