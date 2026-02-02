@@ -2,15 +2,14 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../config";
 
-// Middleware to check if the user is admin
 export const isAdmin = (req: Request, res: Response, next: NextFunction) => {
   try {
-    const authHeader = req.headers.authorization;
-    if (!authHeader) {
+    // Read token from cookie
+    const token = req.cookies?.auth_token;
+    if (!token) {
       return res.status(401).json({ success: false, message: "No token provided" });
     }
 
-    const token = authHeader.split(" ")[1];
     const decoded: any = jwt.verify(token, JWT_SECRET);
 
     if (decoded.role !== "admin") {
