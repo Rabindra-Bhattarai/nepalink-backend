@@ -2,6 +2,7 @@ import express from "express";
 import { uploads } from "../middlewares/upload.middleware";
 import { UserRepository } from "../repositories/user.repository";
 import { isAdmin } from "../middlewares/admin.middleware";
+import { UserModel } from "../models/user.model"; // needed for pagination
 
 const adminRouter = express.Router();
 const userRepository = new UserRepository();
@@ -20,11 +21,23 @@ adminRouter.post("/users", isAdmin, uploads.single("photo"), async (req, res) =>
   }
 });
 
-// Get all users
+// Get all users with pagination
 adminRouter.get("/users", isAdmin, async (req, res) => {
   try {
-    const users = await userRepository.getAllUsers();
-    return res.status(200).json({ success: true, data: users });
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const skip = (page - 1) * limit;
+
+    const users = await UserModel.find().skip(skip).limit(limit);
+    const total = await UserModel.countDocuments();
+
+    return res.status(200).json({
+      success: true,
+      data: users,
+      total,
+      page,
+      limit,
+    });
   } catch (error: any) {
     return res.status(500).json({ success: false, message: error.message });
   }

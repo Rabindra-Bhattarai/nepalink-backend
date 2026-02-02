@@ -35,4 +35,6 @@ async function seedAdmin() {
   }
 }
 
+
+//Admin@123
 seedAdmin();
