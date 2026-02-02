@@ -8,9 +8,9 @@ export async function connectDatabase() {
     if (!uri) throw new Error("MONGODB_URI not defined");
 
     await mongoose.connect(uri);
-    console.log("✅ Connected to MongoDB");
+    console.log(" Connected to MongoDB");
   } catch (error) {
-    console.error("❌ MongoDB connection error:", error);
+    console.error(" MongoDB connection error:", error);
     process.exit(1);
   }
 }
