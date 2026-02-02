@@ -13,7 +13,7 @@ async function seedAdmin() {
 
     const existingAdmin = await UserModel.findOne({ email: "admin@example.com" });
     if (existingAdmin) {
-      console.log("⚠️ Admin already exists. Skipping creation.");
+      console.log("Admin already exists. Skipping creation.");
       return;
     }
 
@@ -29,7 +29,7 @@ async function seedAdmin() {
 
     console.log(" Admin created:", admin.email);
   } catch (error) {
-    console.error("❌ Error seeding admin:", error);
+    console.error("Error seeding admin:", error);
   } finally {
     mongoose.connection.close();
   }
