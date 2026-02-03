@@ -4,20 +4,61 @@ import { uploads } from "../middlewares/upload.middleware";
 import { UserRepository } from "../repositories/user.repository";
 import jwt from "jsonwebtoken";
 import { UserModel } from "../models/user.model";
+import { JWT_SECRET } from "../config";
 
 const authController = new AuthController();
 const authRouter = Router();
 const userRepository = new UserRepository();
 
+// Register
 authRouter.post("/register", (req, res, next) =>
   authController.register(req, res).catch(next)
 );
 
-authRouter.post("/login", (req, res, next) =>
-  authController.login(req, res).catch(next)
-);
+// Login
+authRouter.post("/login", async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+    const user = await UserModel.findOne({ email });
+    if (!user) {
+      return res.status(401).json({ success: false, message: "Invalid credentials" });
+    }
 
-//  New route: Get current logged-in user
+    // validate password
+    const bcryptjs = require("bcryptjs");
+    const isMatch = await bcryptjs.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ success: false, message: "Invalid credentials" });
+    }
+
+    // generate token
+    const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, { expiresIn: "1d" });
+
+    // set cookie
+    res.cookie("auth_token", token, {
+      httpOnly: true,
+      secure: false, // set true in production with HTTPS
+      sameSite: "lax",
+    });
+
+    //  return token + user data so frontend can use it
+    return res.status(200).json({
+      success: true,
+      message: "Login successful",
+      token,
+      data: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// Get current logged-in user
 authRouter.get("/me", async (req, res) => {
   try {
     const token = req.cookies?.auth_token;
@@ -25,14 +66,14 @@ authRouter.get("/me", async (req, res) => {
       return res.status(401).json({ success: false, message: "No token provided" });
     }
 
-    const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
+    const decoded: any = jwt.verify(token, JWT_SECRET);
     const user = await UserModel.findById(decoded.id).select("name email role");
 
     if (!user) {
       return res.status(404).json({ success: false, message: "User not found" });
     }
 
-    return res.status(200).json({ success: true, ...user.toObject() });
+    return res.status(200).json({ success: true, data: user });
   } catch (error: any) {
     return res.status(401).json({ success: false, message: "Invalid token" });
   }

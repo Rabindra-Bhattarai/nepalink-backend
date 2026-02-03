@@ -1,4 +1,5 @@
 import { IUser, UserModel } from "../models/user.model";
+import mongoose from "mongoose";
 
 export interface IUserRepository {
   getUserByEmail(email: string): Promise<IUser | null>;
@@ -24,9 +25,12 @@ export class UserRepository implements IUserRepository {
     return await UserModel.findOne({ phone });
   }
 
+
   async getUserById(id: string): Promise<IUser | null> {
-    return await UserModel.findById(id);
+    if (!mongoose.Types.ObjectId.isValid(id)) return null;
+    return await UserModel.findById(id).select("-password");
   }
+
 
   async getAllUsers(): Promise<IUser[]> {
     return await UserModel.find();
