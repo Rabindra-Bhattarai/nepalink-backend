@@ -3,6 +3,26 @@ import { UserModel } from "../models/user.model";
 import path from "path";
 import fs from "fs";
 
+//  Fetch user by ID
+export const getUserById = async (req: Request, res: Response) => {
+  try {
+    const userId = req.params.id;
+    const user = await UserModel.findById(userId).select("-password");
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: user,
+    });
+  } catch (error: any) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+//  Update user profile picture
 export const updateUserProfilePic = async (req: Request, res: Response) => {
   try {
     const userId = req.params.id;
@@ -25,7 +45,7 @@ export const updateUserProfilePic = async (req: Request, res: Response) => {
     }
 
     // Save new file
-    const imageUrl = req.file.filename; //store only filename
+    const imageUrl = req.file.filename; // store only filename
     user.imageUrl = imageUrl;
     await user.save();
 
