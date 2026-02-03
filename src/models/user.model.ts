@@ -1,4 +1,5 @@
 import mongoose, { Document, Schema } from "mongoose";
+import bcryptjs from "bcryptjs";
 
 const UserSchema: Schema = new Schema(
   {
@@ -18,6 +19,7 @@ const UserSchema: Schema = new Schema(
   }
 );
 
+
 export interface IUser extends Document {
   _id: mongoose.Types.ObjectId;
   name: string;
@@ -25,7 +27,7 @@ export interface IUser extends Document {
   phone: string;
   password: string;
   imageUrl?: string;
-  role: "nurse" | "member" | "admin";
+  role: "nurse" | "member" | "admin" ;
   createdAt: Date;
   updatedAt: Date;
 }

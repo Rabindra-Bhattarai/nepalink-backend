@@ -3,6 +3,7 @@ import { uploads } from "../middlewares/upload.middleware";
 import { UserRepository } from "../repositories/user.repository";
 import { isAdmin } from "../middlewares/admin.middleware";
 import { UserModel } from "../models/user.model";
+import bcryptjs from "bcryptjs"; //  import bcrypt
 
 const adminRouter = express.Router();
 const userRepository = new UserRepository();
@@ -19,18 +20,20 @@ adminRouter.post("/users", isAdmin, uploads.single("photo"), async (req, res) =>
     }
 
     // Quick validation
-    if (!userData.name || !userData.email || !userData.role) {
+    if (!userData.name || !userData.email || !userData.role || !userData.password) {
       return res.status(400).json({ success: false, message: "Missing required fields" });
     }
+
+    //  Hash password before saving
+    userData.password = await bcryptjs.hash(userData.password, 10);
 
     const newUser = await userRepository.createUser(userData);
     return res.status(201).json({ success: true, data: newUser });
   } catch (error: any) {
-    console.error("Create user error:", error); // ✅ log the actual error
+    console.error("Create user error:", error);
     return res.status(500).json({ success: false, message: error.message });
   }
 });
-
 
 //  Get all users with pagination + optional filters
 adminRouter.get("/users", isAdmin, async (req, res) => {
@@ -73,6 +76,12 @@ adminRouter.put("/users/:id", isAdmin, uploads.single("photo"), async (req, res)
     if (req.file) {
       updateData.imageUrl = req.file.filename;
     }
+
+    //  If password is being updated, hash it
+    if (updateData.password) {
+      updateData.password = await bcryptjs.hash(updateData.password, 10);
+    }
+
     const updatedUser = await userRepository.updateUser(req.params.id, updateData);
     if (!updatedUser) return res.status(404).json({ success: false, message: "User not found" });
     return res.status(200).json({ success: true, data: updatedUser });
