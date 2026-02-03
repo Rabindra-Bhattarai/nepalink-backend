@@ -16,7 +16,8 @@ export class AuthController {
       }
 
       const userData = parsedData.data;
-      const newUser = await userService.createUser(userData);
+      const role = req.body.role || "nurse"; // web can send member/admin, otherwise nurse
+      const newUser = await userService.createUser({ ...userData, role });
 
       return res.status(201).json({
         success: true,
@@ -58,11 +59,3 @@ export class AuthController {
     }
   }
 }
-
-
-///backend bata user ko data tanne controller ho yo
-
-//sir ko 35-B backend code
-//Service
-//auth controller
-//routes--> middleware haru ko kura
