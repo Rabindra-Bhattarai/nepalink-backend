@@ -1,6 +1,6 @@
+import { Request, Response } from "express";
 import { CreateUserDTO, LoginUserDTO } from "../dtos/user.dto";
 import { UserService } from "../services/user.service";
-import { Request, Response } from "express";
 
 const userService = new UserService();
 
@@ -16,7 +16,7 @@ export class AuthController {
       }
 
       const userData = parsedData.data;
-      const role = req.body.role || "nurse"; // web can send member/admin, otherwise nurse
+      const role = req.body.role || "nurse"; // default role if not provided
       const newUser = await userService.createUser({ ...userData, role });
 
       return res.status(201).json({
@@ -44,6 +44,13 @@ export class AuthController {
 
       const loginData = parsedData.data;
       const { token, user } = await userService.loginUser(loginData);
+
+      //  Set cookie for isAdmin middleware
+      res.cookie("auth_token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+      });
 
       return res.status(200).json({
         success: true,

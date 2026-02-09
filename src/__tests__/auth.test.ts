@@ -1,83 +1,71 @@
 import request from "supertest";
 import app from "../index";
+import { UserModel } from "../models/user.model";
 
-describe("Auth Integration Tests", () => {
-  const testUser = {
-    name: "Test User",
-    email: "testuser@example.com",
-    phone: "9800000001",
-    password: "Pass123!"
-  };
-
-  // Ensure user exists before each test
+describe("Auth Routes Integration", () => {
   beforeEach(async () => {
-    await request(app)
-      .post("/api/auth/register")
-      .send(testUser);
+    await UserModel.deleteMany({});
   });
 
-  it("should register a new user successfully", async () => {
-    const res = await request(app)
-      .post("/api/auth/register")
-      .send({
-        name: "Another User",
-        email: "another@example.com",
-        phone: "9800000002",
-        password: "Pass123!"
-      });
-
-    expect(res.statusCode).toBe(201);
-    expect(res.body.success).toBe(true);
-    expect(res.body.data).toHaveProperty("email", "another@example.com");
+  it("registers a new user", async () => {
+    const res = await request(app).post("/api/auth/register").send({
+      name: "Test User", email: "test@example.com", phone: "9800000000", password: "secret123"
+    });
+    expect(res.status).toBe(201);
+    expect(res.body.data.email).toBe("test@example.com");
   });
 
-  it("should fail to register with missing fields", async () => {
-    const res = await request(app)
-      .post("/api/auth/register")
-      .send({ email: "invalid@example.com" });
-
-    expect(res.statusCode).toBe(400);
-    expect(res.body.success).toBe(false);
+  it("fails register with missing fields", async () => {
+    const res = await request(app).post("/api/auth/register").send({ email: "missing@example.com" });
+    expect(res.status).toBe(400);
   });
 
-  it("should login successfully with correct credentials", async () => {
-    const res = await request(app)
-      .post("/api/auth/login")
-      .send({ email: testUser.email, password: testUser.password });
-
-    expect(res.statusCode).toBe(200);
-    expect(res.body.success).toBe(true);
-    expect(res.body).toHaveProperty("token");
+  it("rejects duplicate email", async () => {
+    await request(app).post("/api/auth/register").send({ name: "A", email: "dup@example.com", phone: "9800000001", password: "secret123" });
+    const res = await request(app).post("/api/auth/register").send({ name: "B", email: "dup@example.com", phone: "9800000002", password: "secret123" });
+    expect(res.status).toBe(403);
   });
 
-  it("should fail login with wrong password", async () => {
-    const res = await request(app)
-      .post("/api/auth/login")
-      .send({ email: testUser.email, password: "WrongPass!" });
-
-    expect(res.statusCode).toBe(401);
-    expect(res.body.success).toBe(false);
+  it("rejects duplicate phone", async () => {
+    await request(app).post("/api/auth/register").send({ name: "A", email: "phone1@example.com", phone: "9800000003", password: "secret123" });
+    const res = await request(app).post("/api/auth/register").send({ name: "B", email: "phone2@example.com", phone: "9800000003", password: "secret123" });
+    expect(res.status).toBe(403);
   });
 
-  it("should return current user with valid token", async () => {
-    const login = await request(app)
-      .post("/api/auth/login")
-      .send({ email: testUser.email, password: testUser.password });
-
-    const token = login.body.token;
-
-    const res = await request(app)
-      .get("/api/auth/me")
-      .set("Cookie", [`auth_token=${token}`]);
-
-    expect(res.statusCode).toBe(200);
-    expect(res.body.success).toBe(true);
-    expect(res.body.data).toHaveProperty("email", testUser.email);
+  it("logs in with correct credentials", async () => {
+    await request(app).post("/api/auth/register").send({ name: "Login", email: "login@example.com", phone: "9800000004", password: "secret123" });
+    const res = await request(app).post("/api/auth/login").send({ email: "login@example.com", password: "secret123" });
+    expect(res.status).toBe(200);
+    expect(res.body.token).toBeDefined();
   });
 
-  it("should fail to get current user without token", async () => {
+  it("rejects wrong password", async () => {
+    await request(app).post("/api/auth/register").send({ name: "Wrong", email: "wrong@example.com", phone: "9800000005", password: "secret123" });
+    const res = await request(app).post("/api/auth/login").send({ email: "wrong@example.com", password: "badpass" });
+    expect(res.status).toBe(401);
+  });
+
+  it("rejects non-existent email", async () => {
+    const res = await request(app).post("/api/auth/login").send({ email: "noexist@example.com", password: "secret123" });
+    expect(res.status).toBe(401);
+  });
+
+  it("returns /me with valid token", async () => {
+    await request(app).post("/api/auth/register").send({ name: "Me", email: "me@example.com", phone: "9800000006", password: "secret123" });
+    const loginRes = await request(app).post("/api/auth/login").send({ email: "me@example.com", password: "secret123" });
+    const cookie = loginRes.headers["set-cookie"][0];
+    const res = await request(app).get("/api/auth/me").set("Cookie", cookie);
+    expect(res.status).toBe(200);
+    expect(res.body.data.email).toBe("me@example.com");
+  });
+
+  it("rejects /me with invalid token", async () => {
+    const res = await request(app).get("/api/auth/me").set("Cookie", ["auth_token=invalid"]);
+    expect(res.status).toBe(401);
+  });
+
+  it("rejects /me with no token", async () => {
     const res = await request(app).get("/api/auth/me");
-    expect(res.statusCode).toBe(401);
-    expect(res.body.success).toBe(false);
+    expect(res.status).toBe(401);
   });
 });
