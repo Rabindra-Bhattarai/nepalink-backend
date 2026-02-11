@@ -56,6 +56,7 @@ import passwordRouter from "./routes/password.route";
 import cors from "cors";
 import path from "path";
 import cookieParser from "cookie-parser";
+import bookingRouter from "./routes/booking.route";
 
 const app: Application = express();
 
@@ -80,6 +81,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/users", userRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/auth", passwordRouter);
+app.use("/api/bookings", bookingRouter);
 
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
