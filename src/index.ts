@@ -56,13 +56,23 @@ import passwordRouter from "./routes/password.route";
 import cors from "cors";
 import path from "path";
 import cookieParser from "cookie-parser";
+import bookingRouter from "./routes/booking.route";
+import activityRouter from "./routes/activity.route";
 
 const app: Application = express();
 
+// app.use(cors({
+//   origin:[ "http://localhost:3001",
+//   "http://172.25.0.222:3001"
+//   ],
+//   credentials: true,
+// }));
+
 app.use(cors({
-  origin: "http://localhost:3001",
+  origin: true,
   credentials: true,
 }));
+
 
 app.use(cookieParser());
 app.use(express.json());
@@ -72,6 +82,8 @@ app.use("/api/auth", authRouter);
 app.use("/api/users", userRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/auth", passwordRouter);
+app.use("/api/bookings", bookingRouter);
+app.use("/api/activities", activityRouter);
 
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
