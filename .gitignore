@@ -18,3 +18,5 @@ yarn-error.log*
 Thumbs.db
 
 
+#total api endpoints = 17
+#rod=tal CRUD = 5 (POST, GET, PUT, DELETE, PATCH)
