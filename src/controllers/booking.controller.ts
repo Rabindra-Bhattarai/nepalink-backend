@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { BookingService } from "../services/booking.service";
 import { CreateBookingDTO, UpdateBookingStatusDTO } from "../dtos/booking.dto";
+import { BookingType } from "../types/booking.type";
 
 const bookingService = new BookingService();
 
@@ -15,7 +16,7 @@ export class BookingController {
         });
       }
 
-      const booking = await bookingService.createBooking(parsed.data);
+      const booking: BookingType = await bookingService.createBooking(parsed.data);
 
       return res.status(201).json({
         success: true,
@@ -53,7 +54,7 @@ export class BookingController {
         Number(limit)
       );
 
-      res.set("X-Total-Count", total.toString()); // conditional header
+      res.set("X-Total-Count", total.toString());
 
       return res.status(200).json({
         success: true,
@@ -74,7 +75,7 @@ export class BookingController {
 
   async getById(req: Request, res: Response) {
     try {
-      const booking = await bookingService.getBookingById(req.params.id);
+      const booking: BookingType = await bookingService.getBookingById(req.params.id);
       return res.status(200).json({
         success: true,
         data: booking,
@@ -102,7 +103,7 @@ export class BookingController {
         });
       }
 
-      const booking = await bookingService.updateBookingStatus(req.params.id, parsed.data);
+      const booking: BookingType = await bookingService.updateBookingStatus(req.params.id, parsed.data);
 
       return res.status(200).json({
         success: true,
