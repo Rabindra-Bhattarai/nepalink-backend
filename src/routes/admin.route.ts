@@ -97,7 +97,6 @@ adminRouter.delete("/users/:id", isAdmin, async (req, res) => {
   }
 });
 
-// -------------------- ADMIN ANALYTICS --------------------
 
 // Get all bookings with status breakdown
 adminRouter.get("/bookings", isAdmin, (req, res) => adminController.getAllBookings(req, res));
