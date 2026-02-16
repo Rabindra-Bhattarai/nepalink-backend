@@ -1,19 +1,21 @@
 import { Router } from "express";
 import { BookingController } from "../controllers/booking.controller";
+import { authenticate, isMember, isNurse } from "../middlewares/auth.middleware";
 
 const bookingController = new BookingController();
 const bookingRouter = Router();
 
-// Create booking
-bookingRouter.post("/", (req, res) => bookingController.create(req, res));
+// Members create bookings
+bookingRouter.post("/", authenticate, isMember, (req, res) => bookingController.create(req, res));
 
-// Get all bookings (with filters, sorting, pagination)
-bookingRouter.get("/", (req, res) => bookingController.getAll(req, res));
+// Members & Nurses can view bookings
+bookingRouter.get("/", authenticate, (req, res) => bookingController.getAll(req, res));
+bookingRouter.get("/:id", authenticate, (req, res) => bookingController.getById(req, res));
 
-// Get booking by ID
-bookingRouter.get("/:id", (req, res) => bookingController.getById(req, res));
+// Nurses update booking status
+bookingRouter.patch("/:id/status", authenticate, isNurse, (req, res) => bookingController.updateStatus(req, res));
 
-// Update booking status (accept/decline)
-bookingRouter.patch("/:id/status", (req, res) => bookingController.updateStatus(req, res));
+// NEW: Nurses decline booking
+bookingRouter.patch("/:id/decline", authenticate, isNurse, (req, res) => bookingController.decline(req, res));
 
 export default bookingRouter;

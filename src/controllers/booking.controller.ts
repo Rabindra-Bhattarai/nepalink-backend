@@ -119,4 +119,24 @@ export class BookingController {
       });
     }
   }
+
+  // NEW: Decline booking
+  async decline(req: Request, res: Response) {
+    try {
+      const booking: BookingType = await bookingService.updateBookingStatus(req.params.id, { status: "declined" });
+
+      return res.status(200).json({
+        success: true,
+        data: booking,
+        links: {
+          self: `/api/bookings/${booking._id}`,
+        },
+      });
+    } catch (error: any) {
+      return res.status(error.statusCode ?? 500).json({
+        success: false,
+        message: error.message || "Internal Server Error",
+      });
+    }
+  }
 }

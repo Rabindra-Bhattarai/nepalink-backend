@@ -7,6 +7,7 @@ import { ActivityType } from "../types/activity.type";
 const activityRepo = new ActivityRepository();
 
 export class ActivityService {
+ 
   async logActivity(data: CreateActivityDTO): Promise<ActivityType> {
     const activity = await activityRepo.create({
       bookingId: new mongoose.Types.ObjectId(data.bookingId),
@@ -15,14 +16,24 @@ export class ActivityService {
       performedAt: new Date(),
     });
 
-    return activity as unknown as ActivityType;
+    // Populate nurse details before returning
+    const populated = await activity.populate("nurseId", "_id name email role");
+    return populated as unknown as ActivityType;
   }
+
 
   async getActivitiesForBooking(bookingId: string): Promise<ActivityType[]> {
     const activities = await activityRepo.findByBookingId(bookingId);
+
     if (!activities || activities.length === 0) {
       throw new HttpError(404, "No activities found for this booking");
     }
-    return activities as unknown as ActivityType[];
+
+    // Populate nurse details for each activity
+    const populated = await Promise.all(
+      activities.map((act) => act.populate("nurseId", "_id name email role"))
+    );
+
+    return populated as unknown as ActivityType[];
   }
 }
