@@ -15,4 +15,7 @@ bookingRouter.get("/:id", authenticate, (req, res) => bookingController.getById(
 // Nurses update booking status
 bookingRouter.patch("/:id/status", authenticate, isNurse, (req, res) => bookingController.updateStatus(req, res));
 
+// NEW: Nurses decline booking
+bookingRouter.patch("/:id/decline", authenticate, isNurse, (req, res) => bookingController.decline(req, res));
+
 export default bookingRouter;
