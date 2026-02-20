@@ -96,4 +96,15 @@ authRouter.put("/:id", uploads.single("photo"), async (req, res) => {
   }
 });
 
+// Logout
+authRouter.post("/logout", (req, res) => {
+  res.clearCookie("auth_token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production", // true in production
+    sameSite: "strict",
+  });
+  return res.status(200).json({ success: true, message: "Logged out successfully" });
+});
+
+
 export default authRouter;
