@@ -6,8 +6,8 @@ export class ActivityRepository {
     return await activity.save();
   }
 
-  async findByBookingId(bookingId: string): Promise<IActivity[]> {
-    return await ActivityModel.find({ bookingId })
+  async findByContractId(contractId: string): Promise<IActivity[]> {
+    return ActivityModel.find({ contractId })
       .populate("nurseId", "name email role")
       .sort({ performedAt: -1 });
   }
