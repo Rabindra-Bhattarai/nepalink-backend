@@ -35,24 +35,40 @@ async getAllUsers(req: Request, res: Response) {
 
   // CREATE user
   async createUser(req: Request, res: Response) {
-    try {
-      const user = await adminService.createUser(req.body);
-      return res.status(201).json({ success: true, data: user });
-    } catch (error: any) {
-      return res.status(500).json({ success: false, message: error.message });
+  try {
+    const data: any = { ...req.body };
+
+    if (req.file) {
+      data.imageUrl = req.file.filename; // or full path if you prefer
     }
+
+    const user = await adminService.createUser(data);
+    return res.status(201).json({ success: true, data: user });
+  } catch (error: any) {
+    console.error("Create user error:", error);
+    return res.status(500).json({ success: false, message: error.message });
   }
+}
+
+
 
   // EDIT user
   async updateUser(req: Request, res: Response) {
-    try {
-      const user = await adminService.updateUser(req.params.id, req.body);
-      if (!user) return res.status(404).json({ success: false, message: "User not found" });
-      return res.json({ success: true, data: user });
-    } catch (error: any) {
-      return res.status(500).json({ success: false, message: error.message });
+  try {
+    const updateData: any = { ...req.body };
+
+    if (req.file) {
+      updateData.imageUrl = req.file.filename; 
     }
+
+    const user = await adminService.updateUser(req.params.id, updateData);
+    if (!user) return res.status(404).json({ success: false, message: "User not found" });
+    return res.json({ success: true, data: user });
+  } catch (error: any) {
+    return res.status(500).json({ success: false, message: error.message });
   }
+}
+
 
   // DELETE user
   async deleteUser(req: Request, res: Response) {
