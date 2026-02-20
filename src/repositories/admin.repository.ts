@@ -1,4 +1,5 @@
 import { UserModel } from "../models/user.model";
+import bcrypt from "bcrypt";
 
 export class AdminRepository {
   async getAllUsers(page: number, limit: number, sort: string, role?: string, search?: string) {
@@ -26,7 +27,7 @@ export class AdminRepository {
     }
 
     const users = await UserModel.find(query)
-      .select("_id name email role createdAt updatedAt")
+      .select("_id name email role phone imageUrl createdAt updatedAt")
       .skip(skip)
       .limit(limit)
       .sort(sortOption);
@@ -47,12 +48,24 @@ export class AdminRepository {
   }
 
   async getUserById(id: string) {
-    return UserModel.findById(id).select("_id name email role createdAt updatedAt");
+    return UserModel.findById(id).select("_id name email role phone imageUrl createdAt updatedAt");
   }
 
-  async createUser(data: any) {
-    return UserModel.create(data);
-  }
+
+
+async createUser(data: any) {
+  const hashedPassword = await bcrypt.hash(data.password, 10);
+  return UserModel.create({
+    name: data.name,
+    email: data.email,
+    role: data.role,
+    phone: data.phone,
+    password: hashedPassword,
+    imageUrl: data.imageUrl,
+  });
+}
+
+
 
   async updateUser(id: string, data: any) {
     return UserModel.findByIdAndUpdate(id, data, { new: true });
