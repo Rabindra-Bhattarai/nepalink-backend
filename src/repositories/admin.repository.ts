@@ -51,7 +51,7 @@ export class AdminRepository {
     return UserModel.findById(id).select("_id name email role phone imageUrl createdAt updatedAt");
   }
 
-
+ 
 
 async createUser(data: any) {
   const hashedPassword = await bcrypt.hash(data.password, 10);
@@ -64,7 +64,6 @@ async createUser(data: any) {
     imageUrl: data.imageUrl,
   });
 }
-
 
 
   async updateUser(id: string, data: any) {
