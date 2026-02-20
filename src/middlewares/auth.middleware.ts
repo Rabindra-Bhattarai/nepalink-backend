@@ -2,9 +2,12 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../config";
 
+// Verify JWT and attach decoded user
 export const authenticate = (req: Request, res: Response, next: NextFunction) => {
   try {
-    const token = req.cookies?.auth_token || req.headers["authorization"]?.split(" ")[1];
+    const token =
+      req.cookies?.auth_token || req.headers["authorization"]?.split(" ")[1];
+
     if (!token) {
       return res.status(401).json({ success: false, message: "No token provided" });
     }
@@ -17,22 +20,23 @@ export const authenticate = (req: Request, res: Response, next: NextFunction) =>
   }
 };
 
+// Role-based guards
 export const isMember = (req: Request, res: Response, next: NextFunction) => {
-  if ((req as any).user.role !== "member") {
+  if ((req as any).user?.role !== "member") {
     return res.status(403).json({ success: false, message: "Access denied. Members only." });
   }
   next();
 };
 
 export const isNurse = (req: Request, res: Response, next: NextFunction) => {
-  if ((req as any).user.role !== "nurse") {
+  if ((req as any).user?.role !== "nurse") {
     return res.status(403).json({ success: false, message: "Access denied. Nurses only." });
   }
   next();
 };
 
 export const isAdmin = (req: Request, res: Response, next: NextFunction) => {
-  if ((req as any).user.role !== "admin") {
+  if ((req as any).user?.role !== "admin") {
     return res.status(403).json({ success: false, message: "Access denied. Admins only." });
   }
   next();
