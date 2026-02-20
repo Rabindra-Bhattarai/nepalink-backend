@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import { ActivityService } from "../services/activity.service";
-import { CreateActivityDTO } from "../dtos/activity.dto";
 import { ActivityType } from "../types/activity.type";
 
 const activityService = new ActivityService();
@@ -8,47 +7,40 @@ const activityService = new ActivityService();
 export class ActivityController {
   async log(req: Request, res: Response) {
     try {
-      const parsed = CreateActivityDTO.safeParse(req.body);
-      if (!parsed.success) {
-        return res.status(400).json({
-          success: false,
-          message: parsed.error.issues.map((i) => i.message),
-        });
+      const { contractId, description, notes, date } = req.body;
+
+      if (!contractId) {
+        return res.status(400).json({ success: false, message: "Must provide contractId" });
+      }
+      if (!notes) {
+        return res.status(400).json({ success: false, message: "Must provide notes" });
       }
 
-      const activity: ActivityType = await activityService.logActivity(parsed.data);
+      const activity: ActivityType = await activityService.logActivity({
+  contractId,
+  nurseId: req.body.nurseId ?? (req as any).user._id,
+  description,
+  notes,
+  date,
+});
 
-      return res.status(201).json({
-        success: true,
-        data: activity,
-        links: {
-          self: `/api/activities/${activity._id}`,
-          booking: `/api/bookings/${activity.bookingId}`,
-        },
-      });
+
+      
+
+      return res.status(201).json({ success: true, data: activity });
     } catch (error: any) {
-      return res.status(error.statusCode ?? 500).json({
-        success: false,
-        message: error.message || "Internal Server Error",
-      });
+      return res.status(error.statusCode ?? 500).json({ success: false, message: error.message });
     }
   }
 
-  async getByBooking(req: Request, res: Response) {
+  async getByContract(req: Request, res: Response) {
     try {
-      const activities: ActivityType[] = await activityService.getActivitiesForBooking(req.params.bookingId);
-      return res.status(200).json({
-        success: true,
-        data: activities,
-        links: {
-          self: `/api/activities/${req.params.bookingId}`,
-        },
-      });
+      const activities: ActivityType[] = await activityService.getActivitiesForContract(
+        req.params.contractId
+      );
+      return res.status(200).json({ success: true, data: activities });
     } catch (error: any) {
-      return res.status(error.statusCode ?? 500).json({
-        success: false,
-        message: error.message || "Internal Server Error",
-      });
+      return res.status(error.statusCode ?? 500).json({ success: false, message: error.message });
     }
   }
 }
