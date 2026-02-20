@@ -1,67 +1,73 @@
-import { BookingModel } from "../models/booking.model";
-import { ActivityModel } from "../models/activity.model";
 import { UserModel } from "../models/user.model";
 
 export class AdminRepository {
-  async getAllBookings() {
-    return BookingModel.find()
-      .populate("memberId", "_id name email role")
-      .populate("nurseId", "_id name email role");
+  async getAllUsers(page: number, limit: number, sort: string, role?: string, search?: string) {
+    const query: any = {};
+
+    // Filtering by role
+    if (role) query.role = role;
+
+    // Search by name or email
+    if (search) {
+      query.$or = [
+        { name: { $regex: search, $options: "i" } },
+        { email: { $regex: search, $options: "i" } }
+      ];
+    }
+
+    // Pagination
+    const skip = (page - 1) * limit;
+
+    // Sorting
+    const sortOption: any = {};
+    if (sort) {
+      const [field, order] = sort.split(":"); // e.g. "name:asc"
+      sortOption[field] = order === "desc" ? -1 : 1;
+    }
+
+    const users = await UserModel.find(query)
+      .select("_id name email role createdAt updatedAt")
+      .skip(skip)
+      .limit(limit)
+      .sort(sortOption);
+
+    const total = await UserModel.countDocuments(query);
+
+    return {
+      users,
+      pagination: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+        hasNextPage: page * limit < total,
+        hasPrevPage: page > 1
+      }
+    };
   }
 
-  async getNurseWorkload() {
-    const nurses = await UserModel.find({ role: "nurse" });
-    const workload = await Promise.all(
-      nurses.map(async (nurse) => {
-        const bookings = await BookingModel.countDocuments({ nurseId: nurse._id });
-        const activities = await ActivityModel.countDocuments({ nurseId: nurse._id });
-        return {
-          nurse: {
-            _id: nurse._id,
-            name: nurse.name,
-            email: nurse.email,
-            role: nurse.role,
-          },
-          bookings,
-          activities,
-        };
-      })
-    );
-    return workload;
+  async getUserById(id: string) {
+    return UserModel.findById(id).select("_id name email role createdAt updatedAt");
   }
 
-  async getMemberHistory(memberId: string) {
-    const bookings = await BookingModel.find({ memberId })
-      .populate("nurseId", "_id name email role");
+  async createUser(data: any) {
+    return UserModel.create(data);
+  }
 
-    const activities = await ActivityModel.find({
-      bookingId: { $in: bookings.map((b) => b._id) },
-    }).populate("nurseId", "_id name email role");
+  async updateUser(id: string, data: any) {
+    return UserModel.findByIdAndUpdate(id, data, { new: true });
+  }
 
-    return { bookings, activities };
+  async deleteUser(id: string) {
+    return UserModel.findByIdAndDelete(id);
   }
 
   async getAnalytics() {
-    const totalBookings = await BookingModel.countDocuments();
-    const accepted = await BookingModel.countDocuments({ status: "accepted" });
-    const declined = await BookingModel.countDocuments({ status: "declined" });
+    const totalUsers = await UserModel.countDocuments();
+    const nurses = await UserModel.countDocuments({ role: "nurse" });
+    const members = await UserModel.countDocuments({ role: "member" });
+    const admins = await UserModel.countDocuments({ role: "admin" });
 
-    const acceptanceRate = totalBookings > 0 ? (accepted / totalBookings) * 100 : 0;
-
-    const totalActivities = await ActivityModel.countDocuments();
-    const avgActivitiesPerBooking = totalBookings > 0 ? totalActivities / totalBookings : 0;
-
-    const nurseCount = await UserModel.countDocuments({ role: "nurse" });
-    const nurseUtilization = nurseCount > 0 ? accepted / nurseCount : 0;
-
-    return {
-      totalBookings,
-      accepted,
-      declined,
-      acceptanceRate,
-      totalActivities,
-      avgActivitiesPerBooking,
-      nurseUtilization,
-    };
+    return { totalUsers, nurses, members, admins };
   }
 }
