@@ -1,31 +1,33 @@
 import { Request, Response } from "express";
-import { BookingModel } from "../models/booking.model";
-import { ActivityModel } from "../models/activity.model";
+import { MemberService } from "../services/member.service";
+
+const memberService = new MemberService();
 
 export class MemberController {
-  async getMyBookings(req: Request, res: Response) {
+  async getMyContracts(req: Request, res: Response) {
     try {
-      const memberId = (req as any).user._id;
-      const bookings = await BookingModel.find({ memberId })
-        .populate("nurseId", "_id name email role");
-
-      return res.status(200).json({ success: true, data: bookings });
+      const contracts = await memberService.getContracts((req as any).user._id);
+      return res.status(200).json({ success: true, data: contracts });
     } catch (error: any) {
-      return res.status(error.statusCode ?? 500).json({ success: false, message: error.message });
+      return res.status(500).json({ success: false, message: error.message });
     }
   }
 
   async getMyActivities(req: Request, res: Response) {
     try {
-      const memberId = (req as any).user._id;
-      const bookings = await BookingModel.find({ memberId });
-      const activities = await ActivityModel.find({
-        bookingId: { $in: bookings.map((b) => b._id) },
-      }).populate("nurseId", "_id name email role");
-
+      const activities = await memberService.getActivities((req as any).user._id);
       return res.status(200).json({ success: true, data: activities });
     } catch (error: any) {
-      return res.status(error.statusCode ?? 500).json({ success: false, message: error.message });
+      return res.status(500).json({ success: false, message: error.message });
+    }
+  }
+
+  async getMyAnalytics(req: Request, res: Response) {
+    try {
+      const analytics = await memberService.getAnalytics((req as any).user._id);
+      return res.status(200).json({ success: true, data: analytics });
+    } catch (error: any) {
+      return res.status(500).json({ success: false, message: error.message });
     }
   }
 }
