@@ -2,7 +2,7 @@ import mongoose, { Document, Schema } from "mongoose";
 
 const ActivitySchema = new Schema(
   {
-    bookingId: { type: mongoose.Schema.Types.ObjectId, ref: "Booking", required: true },
+    contractId: { type: mongoose.Schema.Types.ObjectId, ref: "Contract", required: true },
     nurseId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     notes: { type: String, required: true },
     performedAt: { type: Date, default: Date.now },
@@ -11,7 +11,7 @@ const ActivitySchema = new Schema(
 );
 
 export interface IActivity extends Document {
-  bookingId: mongoose.Types.ObjectId;
+  contractId: mongoose.Types.ObjectId;
   nurseId: mongoose.Types.ObjectId;
   notes: string;
   performedAt: Date;
