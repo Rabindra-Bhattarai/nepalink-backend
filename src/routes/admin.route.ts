@@ -1,8 +1,7 @@
-// routes/admin.routes.ts
 import { Router } from "express";
-import { authenticate } from "../middlewares/auth.middleware";
-import { isAdmin } from "../middlewares/admin.middleware";
+import { authenticate, isAdmin } from "../middlewares/auth.middleware";
 import { AdminController } from "../controllers/admin.controller";
+import { uploads } from "../middlewares/upload.middleware";
 
 const controller = new AdminController();
 const router = Router();
@@ -12,10 +11,10 @@ router.get("/users", authenticate, isAdmin, controller.getAllUsers);
 router.get("/users/:id", authenticate, isAdmin, controller.getUserById);
 
 // CREATE
-router.post("/users", authenticate, isAdmin, controller.createUser);
+router.post("/users", authenticate, isAdmin, uploads.single("photo"), controller.createUser);
 
-// EDIT
-router.patch("/users/:id", authenticate, isAdmin, controller.updateUser);
+// UPDATE
+router.patch("/users/:id", authenticate, isAdmin, uploads.single("photo"), controller.updateUser);
 
 // DELETE
 router.delete("/users/:id", authenticate, isAdmin, controller.deleteUser);
