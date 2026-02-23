@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { IActivity, ActivityModel } from "../models/activity.model";
 
 export class ActivityRepository {
@@ -6,9 +7,21 @@ export class ActivityRepository {
     return await activity.save();
   }
 
-  async findByContractId(contractId: string): Promise<IActivity[]> {
-    return ActivityModel.find({ contractId })
-      .populate("nurseId", "name email role")
-      .sort({ performedAt: -1 });
+  async updateActivity(
+    id: string,
+    updateData: Partial<IActivity>
+  ): Promise<IActivity | null> {
+    return ActivityModel.findByIdAndUpdate(id, updateData, { new: true })
+      .populate("memberId nurseId", "name email role");
+  }
+
+  async getActivitiesForMember(memberId: string): Promise<IActivity[]> {
+    return ActivityModel.find({ memberId: new mongoose.Types.ObjectId(memberId) })
+      .populate("nurseId", "name email role");
+  }
+
+  async getActivitiesForNurse(nurseId: string): Promise<IActivity[]> {
+    return ActivityModel.find({ nurseId: new mongoose.Types.ObjectId(nurseId) })
+      .populate("memberId", "name email role");
   }
 }
