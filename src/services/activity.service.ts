@@ -7,7 +7,7 @@ export class ActivityService {
     return repo.create(data);
   }
 
-  // 🔧 New method to update full activity
+  //  New method to update full activity
   async updateActivity(id: string, updateData: any) {
     return repo.updateActivity(id, updateData);
   }
