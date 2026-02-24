@@ -34,14 +34,14 @@ authRouter.post("/login", async (req, res, next) => {
     // generate token
     const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, { expiresIn: "1d" });
 
-    // set cookie
     res.cookie("auth_token", token, {
       httpOnly: true,
-      secure: false, // set true in production with HTTPS
+      secure: process.env.NODE_ENV === "production", // only secure in prod
       sameSite: "lax",
     });
 
-    //  return token + user data so frontend can use it
+
+    // return token + user data
     return res.status(200).json({
       success: true,
       message: "Login successful",
@@ -100,11 +100,10 @@ authRouter.put("/:id", uploads.single("photo"), async (req, res) => {
 authRouter.post("/logout", (req, res) => {
   res.clearCookie("auth_token", {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production", // true in production
-    sameSite: "strict",
+    secure: true,       // match login cookie
+    sameSite: "none",   // must match login cookie
   });
   return res.status(200).json({ success: true, message: "Logged out successfully" });
 });
-
 
 export default authRouter;
