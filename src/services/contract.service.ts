@@ -30,4 +30,9 @@ export class ContractService {
   async getContractsForNurse(nurseId: string) {
     return repo.getContractsForNurse(nurseId);
   }
+
+  // NEW: Get contract by ID
+  async getContractById(id: string) {
+    return repo.getById(id);
+  }
 }
