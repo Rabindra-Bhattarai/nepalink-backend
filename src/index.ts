@@ -10,6 +10,7 @@ import memberRoutes from "./routes/member.routes";
 import bookingRouter from "./routes/booking.route";
 import activityRouter from "./routes/activity.route";
 import contractRouter from "./routes/contract.routes";
+import chatRouter from "./routes/chat.routes";
 
 const app: Application = express();
 
@@ -35,7 +36,7 @@ app.use("/api/members", memberRoutes);
 app.use("/api/bookings", bookingRouter);
 app.use("/api/contracts", contractRouter);
 app.use("/api/activities", activityRouter);
-
+app.use("/api/chat", chatRouter);
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 
