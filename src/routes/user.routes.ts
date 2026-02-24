@@ -35,7 +35,7 @@ router.put("/:id", async (req, res) => {
 // Upload profile photo
 router.post("/:id/upload", uploads.single("photo"), updateUserProfilePic);
 
-// ✅ New: Fetch nurses or all users
+// New: Fetch nurses or all users
 router.get("/", async (req, res) => {
   try {
     const role = req.query.role;

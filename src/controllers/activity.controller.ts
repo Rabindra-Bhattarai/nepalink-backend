@@ -6,7 +6,7 @@ import mongoose from "mongoose";
 const activityService = new ActivityService();
 
 export class ActivityController {
-  // ✅ Both member and nurse can create activity
+  //  Both member and nurse can create activity
   async create(req: Request, res: Response) {
     try {
       const user = (req as any).user;
