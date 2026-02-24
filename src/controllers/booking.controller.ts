@@ -1,16 +1,19 @@
 import { Request, Response } from "express";
 import { BookingService } from "../services/booking.service";
+import { ContractService } from "../services/contract.service";
+import { IContract } from "../models/contract.model";
 
 const bookingService = new BookingService();
+const contractService = new ContractService();
 
 export class BookingController {
   // Member: create booking
   async create(req: Request, res: Response) {
     try {
-      const memberId = (req as any).user.id;
+      const memberId = (req as any).user._id; // ✅ use _id, not id
       const { nurseId, date } = req.body;
 
-      // ✅ Prevent duplicate booking with same nurse
+      // Prevent duplicate booking with same nurse
       const existing = await bookingService.findActiveBooking(memberId, nurseId);
       if (existing) {
         return res.status(400).json({
@@ -20,8 +23,11 @@ export class BookingController {
       }
 
       const booking = await bookingService.createBooking({ memberId, nurseId, date });
+      console.log("✅ Booking created:", booking);
+
       res.status(201).json({ success: true, data: booking });
     } catch (error: any) {
+      console.error("❌ Error in create booking:", error);
       res.status(500).json({ success: false, message: error.message });
     }
   }
@@ -34,9 +40,25 @@ export class BookingController {
         return res.status(404).json({ success: false, message: "Booking not found" });
       }
 
-      const contract = await bookingService.createContractFromBooking(booking);
+      // Create contract from booking
+      let contract: IContract | null = await bookingService.createContractFromBooking(booking);
+
+      if (!contract) {
+        return res.status(500).json({ success: false, message: "Failed to create contract" });
+      }
+
+      // Activate contract immediately
+      contract = await contractService.updateStatus(contract._id.toString(), "active");
+
+      if (!contract) {
+        return res.status(404).json({ success: false, message: "Contract not found" });
+      }
+
+      console.log("✅ Booking accepted, contract activated:", contract);
+
       res.json({ success: true, data: { booking, contract } });
     } catch (error: any) {
+      console.error("❌ Error in accept booking:", error);
       res.status(500).json({ success: false, message: error.message });
     }
   }
@@ -50,6 +72,7 @@ export class BookingController {
       }
       res.json({ success: true, data: booking });
     } catch (error: any) {
+      console.error("❌ Error in decline booking:", error);
       res.status(500).json({ success: false, message: error.message });
     }
   }
@@ -60,7 +83,6 @@ export class BookingController {
       const user = (req as any).user;
       const booking = await bookingService.getBookingById(req.params.id);
 
-      // 👇 Debug logs to trace ownership mismatch
       console.log("Cancel attempt by user:", user);
       console.log("Booking found:", booking);
 
@@ -72,6 +94,7 @@ export class BookingController {
       res.json({ success: true, data: cancelled });
     } catch (error: any) {
       const statusCode = error.message.includes("authorized") ? 403 : 500;
+      console.error("❌ Error in cancel booking:", error);
       res.status(statusCode).json({ success: false, message: error.message });
     }
   }
@@ -79,10 +102,11 @@ export class BookingController {
   // Member: get all their bookings
   async getMyBookings(req: Request, res: Response) {
     try {
-      const memberId = (req as any).user.id;
+      const memberId = (req as any).user._id; // ✅ use _id, not id
       const bookings = await bookingService.getBookingsByMember(memberId);
       res.status(200).json({ success: true, data: bookings });
     } catch (error: any) {
+      console.error("❌ Error in getMyBookings:", error);
       res.status(500).json({ success: false, message: error.message });
     }
   }
