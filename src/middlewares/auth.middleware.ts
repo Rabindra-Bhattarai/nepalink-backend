@@ -14,10 +14,15 @@ export const authenticate = (req: Request, res: Response, next: NextFunction) =>
 
     const decoded: any = jwt.verify(token, JWT_SECRET);
 
-    // Debug log to confirm payload structure
-   // console.log("Decoded JWT:", decoded);
+    // 🔧 Normalize user object so we always have _id
+    (req as any).user = {
+      ...decoded,
+      _id: decoded._id || decoded.id, // ensure _id is set consistently
+    };
 
-    (req as any).user = decoded;
+    // Debug log to confirm payload structure
+    // console.log("Authenticated user:", (req as any).user);
+
     next();
   } catch (error: any) {
     return res.status(401).json({ success: false, message: "Invalid token" });
