@@ -1,21 +1,24 @@
 import { Router } from "express";
-import { BookingController } from "../controllers/booking.controller";
 import { authenticate, isMember, isNurse } from "../middlewares/auth.middleware";
+import { isMemberOrNurse } from "../middlewares/ismemberornurse.middleware";
+import { BookingController } from "../controllers/booking.controller";
 
-const bookingController = new BookingController();
-const bookingRouter = Router();
+const controller = new BookingController();
+const router = Router();
 
-// Members create bookings
-bookingRouter.post("/", authenticate, isMember, (req, res) => bookingController.create(req, res));
+// Member: get all their bookings
+router.get("/", authenticate, isMember, controller.getMyBookings);
 
-// Members & Nurses can view bookings
-bookingRouter.get("/", authenticate, (req, res) => bookingController.getAll(req, res));
-bookingRouter.get("/:id", authenticate, (req, res) => bookingController.getById(req, res));
+// Member: create a new booking
+router.post("/", authenticate, isMember, controller.create);
 
-// Nurses update booking status
-bookingRouter.patch("/:id/status", authenticate, isNurse, (req, res) => bookingController.updateStatus(req, res));
+// Nurse: accept a booking
+router.put("/:id/accept", authenticate, isNurse, controller.accept);
 
-// NEW: Nurses decline booking
-bookingRouter.patch("/:id/decline", authenticate, isNurse, (req, res) => bookingController.decline(req, res));
+// Nurse: decline a booking
+router.put("/:id/decline", authenticate, isNurse, controller.decline);
 
-export default bookingRouter;
+// ✅ Allow both Member and Nurse to cancel
+router.put("/:id/cancel", authenticate, isMemberOrNurse, controller.cancel);
+
+export default router;

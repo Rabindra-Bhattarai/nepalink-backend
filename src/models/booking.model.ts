@@ -7,7 +7,7 @@ const BookingSchema = new Schema(
     date: { type: Date, required: true },
     status: {
       type: String,
-      enum: ["pending", "accepted", "declined"],
+      enum: ["pending", "accepted", "declined", "cancelled"],
       default: "pending",
     },
   },
@@ -18,7 +18,7 @@ export interface IBooking extends Document {
   memberId: mongoose.Types.ObjectId;
   nurseId: mongoose.Types.ObjectId;
   date: Date;
-  status: "pending" | "accepted" | "declined";
+  status: "pending" | "accepted" | "declined" | "cancelled";
   createdAt: Date;
   updatedAt: Date;
 }

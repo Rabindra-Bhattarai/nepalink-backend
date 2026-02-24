@@ -6,6 +6,7 @@
     "test": "jest --coverage",
     "start": "ts-node src/server.ts",
     "dev": "nodemon --exec ts-node src/server.ts"
+  
   },
   "repository": {
     "type": "git",
@@ -21,10 +22,11 @@
   "homepage": "https://github.com/Rabindra-Bhattarai/nepalink-backend#readme",
   "description": "",
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.3",
     "cookie-parser": "^1.4.7",
     "cores": "^0.8.5",
-    "cors": "^2.8.5",
+    "cors": "^2.8.6",
     "dot-env": "^0.0.1",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
@@ -33,7 +35,9 @@
     "morgan": "^1.10.1",
     "multer": "^2.0.2",
     "nodemailer": "^8.0.0",
+    "socket.io": "^4.8.3",
     "uuid": "^13.0.0",
+    "xtend": "^4.0.2",
     "zod": "^4.3.4"
   },
   "devDependencies": {

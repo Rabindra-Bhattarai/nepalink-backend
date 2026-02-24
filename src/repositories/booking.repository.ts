@@ -1,36 +1,46 @@
 import { IBooking, BookingModel } from "../models/booking.model";
 
 export class BookingRepository {
+  // Create a new booking
   async create(data: Partial<IBooking>): Promise<IBooking> {
     const booking = new BookingModel(data);
     return await booking.save();
   }
 
+  // Find booking by ID
   async findById(id: string): Promise<IBooking | null> {
     return await BookingModel.findById(id)
       .populate("memberId nurseId", "name email role");
   }
 
-  async findAll(filters: any, sort: any, page: number, limit: number) {
-    const skip = (page - 1) * limit;
-
-    const query = BookingModel.find(filters)
-      .sort(sort)
-      .skip(skip)
-      .limit(limit)
-      .populate("memberId nurseId", "name email role");
-
-    const results = await query.exec();
-    const total = await BookingModel.countDocuments(filters);
-
-    return { results, total, page, limit };
+  // Find all bookings for a member
+  async findByMember(memberId: string): Promise<IBooking[]> {
+    return await BookingModel.find({ memberId })
+      .populate("nurseId", "name email role")
+      .sort({ date: -1 })
+      .exec();
   }
 
-  async updateStatus(id: string, status: "pending" | "accepted" | "declined"): Promise<IBooking | null> {
+  // Update booking status (pending, accepted, declined, cancelled)
+  async updateStatus(
+    id: string,
+    status: "pending" | "accepted" | "declined" | "cancelled"
+  ): Promise<IBooking | null> {
     return await BookingModel.findByIdAndUpdate(
       id,
       { status },
       { new: true }
     ).populate("memberId nurseId", "name email role");
+  }
+
+  // ✅ Find one booking by custom query (used for duplicate check)
+  async findOne(query: any): Promise<IBooking | null> {
+    return await BookingModel.findOne(query)
+      .populate("memberId nurseId", "name email role");
+  }
+
+  // ✅ Explicit cancel method (wrapper around updateStatus)
+  async cancel(id: string): Promise<IBooking | null> {
+    return await this.updateStatus(id, "cancelled");
   }
 }

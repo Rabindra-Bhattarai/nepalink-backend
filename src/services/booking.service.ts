@@ -1,52 +1,96 @@
-import mongoose from "mongoose";
+import { IBooking } from "../models/booking.model";
 import { BookingRepository } from "../repositories/booking.repository";
-import { CreateBookingDTO, UpdateBookingStatusDTO } from "../dtos/booking.dto";
-import { HttpError } from "../errors/http-error";
-import { BookingType, BookingStatus } from "../types/booking.type";
+import { ContractService } from "./contract.service";
 
 const bookingRepo = new BookingRepository();
+const contractService = new ContractService();
 
 export class BookingService {
-  async createBooking(data: CreateBookingDTO): Promise<BookingType> {
-    // Basic validation: memberId ≠ nurseId
-    if (data.memberId === data.nurseId) {
-      throw new HttpError(400, "Member and Nurse cannot be the same user");
+  // Create a new booking
+  async createBooking(data: any) {
+    return bookingRepo.create(data);
+  }
+
+  // Update booking status (pending, accepted, declined, cancelled)
+  async updateStatus(
+    id: string,
+    status: "pending" | "accepted" | "declined" | "cancelled"
+  ) {
+    return bookingRepo.updateStatus(id, status);
+  }
+
+  // Create a contract when a booking is accepted
+  async createContractFromBooking(booking: IBooking) {
+    const memberId =
+      typeof booking.memberId === "object" && booking.memberId !== null && "_id" in booking.memberId
+        ? (booking.memberId as any)._id
+        : booking.memberId;
+
+    const nurseId =
+      typeof booking.nurseId === "object" && booking.nurseId !== null && "_id" in booking.nurseId
+        ? (booking.nurseId as any)._id
+        : booking.nurseId;
+
+    return contractService.createContract({
+      memberId,
+      nurseId,
+      bookingId: booking._id, // ✅ link contract to booking
+      startDate: booking.date,
+      status: "active",
+    });
+  }
+
+  // Get all bookings for a member
+  async getBookingsByMember(memberId: string) {
+    return bookingRepo.findByMember(memberId);
+  }
+
+  // Prevent duplicate active bookings with the same nurse
+  async findActiveBooking(memberId: string, nurseId: string) {
+    return bookingRepo.findOne({
+      memberId,
+      nurseId,
+      status: { $in: ["pending", "accepted"] },
+    });
+  }
+
+  // Get booking by ID (for ownership checks)
+  async getBookingById(id: string) {
+    return bookingRepo.findById(id);
+  }
+
+  // Cancel booking and terminate linked contract
+  async cancelBooking(id: string, user: { id: string; role: string }) {
+    const booking = await bookingRepo.findById(id);
+    if (!booking) return null;
+
+    // ✅ Extract IDs safely whether populated or not
+    const memberId =
+      typeof booking.memberId === "object" && booking.memberId !== null && "_id" in booking.memberId
+        ? (booking.memberId as any)._id.toString()
+        : (booking.memberId as any)?.toString();
+
+    const nurseId =
+      typeof booking.nurseId === "object" && booking.nurseId !== null && "_id" in booking.nurseId
+        ? (booking.nurseId as any)._id.toString()
+        : (booking.nurseId as any)?.toString();
+
+    // ✅ Ownership check
+    if (
+      (user.role === "member" && memberId !== user.id) ||
+      (user.role === "nurse" && nurseId !== user.id)
+    ) {
+      throw new Error("You are not authorized to cancel this booking");
     }
 
-    const booking = await bookingRepo.create({
-      memberId: new mongoose.Types.ObjectId(data.memberId),
-      nurseId: new mongoose.Types.ObjectId(data.nurseId),
-      date: new Date(data.date),
-    });
+    // ✅ Update booking status
+    const cancelled = await bookingRepo.updateStatus(id, "cancelled");
 
-    return booking as unknown as BookingType;
-  }
+    // ✅ Terminate linked contract if exists
+    if (cancelled) {
+      await contractService.terminateByBooking(cancelled._id.toString());
+    }
 
-  async getBookingById(id: string): Promise<BookingType> {
-    const booking = await bookingRepo.findById(id);
-    if (!booking) throw new HttpError(404, "Booking not found");
-    return booking as unknown as BookingType;
-  }
-
-  async getAllBookings(
-    filters: any,
-    sort: any,
-    page: number,
-    limit: number
-  ): Promise<{ results: BookingType[]; total: number }> {
-    const { results, total } = await bookingRepo.findAll(filters, sort, page, limit);
-    return {
-      results: results as unknown as BookingType[],
-      total,
-    };
-  }
-
-  async updateBookingStatus(
-    id: string,
-    data: UpdateBookingStatusDTO
-  ): Promise<BookingType> {
-    const booking = await bookingRepo.updateStatus(id, data.status as BookingStatus);
-    if (!booking) throw new HttpError(404, "Booking not found");
-    return booking as unknown as BookingType;
+    return cancelled;
   }
 }

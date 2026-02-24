@@ -44,4 +44,8 @@ export class UserRepository implements IUserRepository {
     const result = await UserModel.findByIdAndDelete(id);
     return result ? true : false;
   }
+  async getUsersByRole(role: "nurse" | "member" | "admin"): Promise<IUser[]> {
+  return await UserModel.find({ role }).select("-password");
+}
+
 }
