@@ -34,15 +34,20 @@ export class BookingService {
     return contractService.createContract({
       memberId,
       nurseId,
-      bookingId: booking._id, // ✅ link contract to booking
+      bookingId: booking._id, 
       startDate: booking.date,
       status: "active",
     });
   }
 
-  // Get all bookings for a member
+  // Get all bookings for a member (with nurse details populated)
   async getBookingsByMember(memberId: string) {
     return bookingRepo.findByMember(memberId);
+  }
+
+  // Get all bookings for a nurse (with member details populated)
+  async getBookingsByNurse(nurseId: string) {
+    return bookingRepo.findByNurse(nurseId);
   }
 
   // Prevent duplicate active bookings with the same nurse
@@ -64,7 +69,6 @@ export class BookingService {
     const booking = await bookingRepo.findById(id);
     if (!booking) return null;
 
-    // ✅ Extract IDs safely whether populated or not
     const memberId =
       typeof booking.memberId === "object" && booking.memberId !== null && "_id" in booking.memberId
         ? (booking.memberId as any)._id.toString()
@@ -75,7 +79,6 @@ export class BookingService {
         ? (booking.nurseId as any)._id.toString()
         : (booking.nurseId as any)?.toString();
 
-    // ✅ Ownership check
     if (
       (user.role === "member" && memberId !== user.id) ||
       (user.role === "nurse" && nurseId !== user.id)
@@ -83,10 +86,8 @@ export class BookingService {
       throw new Error("You are not authorized to cancel this booking");
     }
 
-    // ✅ Update booking status
     const cancelled = await bookingRepo.updateStatus(id, "cancelled");
 
-    // ✅ Terminate linked contract if exists
     if (cancelled) {
       await contractService.terminateByBooking(cancelled._id.toString());
     }

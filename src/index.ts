@@ -14,11 +14,12 @@ import chatRouter from "./routes/chat.routes";
 
 const app: Application = express();
 
-// Allow frontend dev server (web) and physical device (Flutter)
+// Allow both web frontend and physical device (Flutter)
 app.use(cors({
   origin: [
-    "http://localhost:3001",       // web frontend dev server
-    "http://172.25.0.222:3001"     // optional local IP for web access
+    "http://localhost:3001",        // web dev server
+    "http://10.221.76.214:3001",     // local IP for web
+    "http://10.238.15.214:3000"      // physical device hitting API directly
   ],
   credentials: true
 }));
@@ -27,7 +28,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Routesclear
+// Routes
 app.use("/api/auth", authRouter);
 app.use("/api/users", userRouter);
 app.use("/api/admin", adminRouter);
@@ -38,8 +39,6 @@ app.use("/api/contracts", contractRouter);
 app.use("/api/activities", activityRouter);
 app.use("/api/chat", chatRouter);
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
-
-
 
 app.get("/", (req: Request, res: Response) => {
   return res.status(200).json({ success: true, message: "Welcome to the API" });
