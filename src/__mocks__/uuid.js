@@ -1,3 +1,1 @@
-module.exports = {
-  v4: () => "mock-uuid-1234"
-};
+module.exports = () => "mock-uuid";
