@@ -29,7 +29,6 @@ describe("AuthController - Register & Login", () => {
   
   
 
-
   it("should fail login with non-existent email", async () => {
     const res = await request(app).post("/api/auth/login").send({
       email: "doesnotexist@example.com",

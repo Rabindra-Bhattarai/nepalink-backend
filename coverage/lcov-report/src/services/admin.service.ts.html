@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for src/routes/password.route.ts</title>
+    <title>Code coverage report for src/services/admin.service.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../prettify.css" />
     <link rel="stylesheet" href="../../base.css" />
@@ -19,13 +19,13 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../index.html">All files</a> / <a href="index.html">src/routes</a> password.route.ts</h1>
+        <h1><a href="../../index.html">All files</a> / <a href="index.html">src/services</a> admin.service.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">77.77% </span>
+                <span class="strong">33.33% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>7/9</span>
+                <span class='fraction'>3/9</span>
             </div>
         
             
@@ -39,14 +39,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/2</span>
+                <span class='fraction'>0/6</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">77.77% </span>
+                <span class="strong">33.33% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>7/9</span>
+                <span class='fraction'>3/9</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line medium'></div>
+    <div class='status-line low'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -76,44 +76,32 @@
 <a name='L11'></a><a href='#L11'>11</a>
 <a name='L12'></a><a href='#L12'>12</a>
 <a name='L13'></a><a href='#L13'>13</a>
-<a name='L14'></a><a href='#L14'>14</a>
-<a name='L15'></a><a href='#L15'>15</a>
-<a name='L16'></a><a href='#L16'>16</a>
-<a name='L17'></a><a href='#L17'>17</a>
-<a name='L18'></a><a href='#L18'>18</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">7x</span>
+<a name='L14'></a><a href='#L14'>14</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { Router } from "express";
-import { PasswordController } from "../controllers/password.controller";
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { AdminRepository } from "../repositories/admin.repository";
+const repo = new AdminRepository();
 &nbsp;
-const passwordController = new PasswordController();
-const passwordRouter = Router();
-&nbsp;
-// Forgot password send reset email
-passwordRouter.post("/forgot-password", <span class="fstat-no" title="function not covered" >(r</span>eq, res) =&gt;
-<span class="cstat-no" title="statement not covered" >  passwordController.forgotPassword(req, res)</span>
-);
-&nbsp;
-// Reset password verify token + update password
-passwordRouter.post("/reset-password/:token", <span class="fstat-no" title="function not covered" >(r</span>eq, res) =&gt;
-<span class="cstat-no" title="statement not covered" >  passwordController.resetPassword(req, res)</span>
-);
-&nbsp;
-export default passwordRouter;
+export class AdminService {
+<span class="fstat-no" title="function not covered" >  getAllUsers(</span>page: number, limit: number, sort: string, role?: string, search?: string) {
+<span class="cstat-no" title="statement not covered" >    return repo.getAllUsers(page, limit, sort, role, search);</span>
+  }
+<span class="fstat-no" title="function not covered" >  getUserById(</span>id: string) { <span class="cstat-no" title="statement not covered" >return repo.getUserById(id); </span>}
+<span class="fstat-no" title="function not covered" >  createUser(</span>data: any) { <span class="cstat-no" title="statement not covered" >return repo.createUser(data); </span>}
+<span class="fstat-no" title="function not covered" >  updateUser(</span>id: string, data: any) { <span class="cstat-no" title="statement not covered" >return repo.updateUser(id, data); </span>}
+<span class="fstat-no" title="function not covered" >  deleteUser(</span>id: string) { <span class="cstat-no" title="statement not covered" >return repo.deleteUser(id); </span>}
+<span class="fstat-no" title="function not covered" >  getAnalytics(</span>) { <span class="cstat-no" title="statement not covered" >return repo.getAnalytics(); </span>}
+}
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->

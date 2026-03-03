@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for src/controllers/auth.controller.ts</title>
+    <title>Code coverage report for src/middlewares/auth.middleware.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../prettify.css" />
     <link rel="stylesheet" href="../../base.css" />
@@ -19,34 +19,34 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../index.html">All files</a> / <a href="index.html">src/controllers</a> auth.controller.ts</h1>
+        <h1><a href="../../index.html">All files</a> / <a href="index.html">src/middlewares</a> auth.middleware.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">54.16% </span>
+                <span class="strong">54.54% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>13/24</span>
+                <span class='fraction'>18/33</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">21.42% </span>
+                <span class="strong">28.57% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>3/14</span>
+                <span class='fraction'>4/14</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
+                <span class="strong">20% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/4</span>
+                <span class='fraction'>1/5</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">54.16% </span>
+                <span class="strong">46.42% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>13/24</span>
+                <span class='fraction'>13/28</span>
             </div>
         
             
@@ -127,35 +127,21 @@
 <a name='L62'></a><a href='#L62'>62</a>
 <a name='L63'></a><a href='#L63'>63</a>
 <a name='L64'></a><a href='#L64'>64</a>
-<a name='L65'></a><a href='#L65'>65</a>
-<a name='L66'></a><a href='#L66'>66</a>
-<a name='L67'></a><a href='#L67'>67</a>
-<a name='L68'></a><a href='#L68'>68</a>
-<a name='L69'></a><a href='#L69'>69</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L65'></a><a href='#L65'>65</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">46x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">46x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-yes">28x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -167,106 +153,108 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { Request, Response } from "express";
-import { CreateUserDTO, LoginUserDTO } from "../dtos/user.dto";
-import { UserService } from "../services/user.service";
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { Request, Response, NextFunction } from "express";
+import jwt from "jsonwebtoken";
+import { JWT_SECRET } from "../config";
 &nbsp;
-const userService = new UserService();
+// Verify JWT and attach decoded user
+export const authenticate = (req: Request, res: Response, next: NextFunction) =&gt; {
+  try {
+    const token =
+      req.cookies?.auth_token || req.headers["authorization"]?.split(" ")[1];
 &nbsp;
-export class AuthController {
-  async register(req: Request, res: Response) {
-    try {
-      const parsedData = CreateUserDTO.safeParse(req.body);
-      if (!parsedData.success) {
-        return res.status(400).json({
-          success: false,
-          message: parsedData.error.issues.map(issue =&gt; issue.message),
-        });
-      }
-&nbsp;
-      const userData = parsedData.data;
-      const role = req.body.role || <span class="branch-1 cbranch-no" title="branch not covered" >"nurse";</span> // default role if not provided
-      const newUser = await userService.createUser({ ...userData, role });
-&nbsp;
-      return res.status(201).json({
-        success: true,
-        message: "User created successfully",
-        data: newUser,
-      });
-    } catch (error: any) {
-<span class="cstat-no" title="statement not covered" >      return res.status(error.statusCode ?? 500).json({</span>
-        success: false,
-        message: error.message || "Internal Server Error",
-      });
+    if (!token) {
+      return res.status(401).json({ success: false, message: "No token provided" });
     }
+&nbsp;
+    const decoded: any = jwt.verify(token, JWT_SECRET);
+&nbsp;
+    // 🔧 Normalize user object so we always have _id
+    (<span class="cstat-no" title="statement not covered" >req as any).user = {</span>
+      ...decoded,
+      _id: decoded._id || decoded.id, // ensure _id is set consistently
+    };
+&nbsp;
+    // Debug log to confirm payload structure
+    // console.log("Authenticated user:", (req as any).user);
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    next();</span>
+  } catch (error: any) {
+    return res.status(401).json({ success: false, message: "Invalid token" });
   }
+};
 &nbsp;
-<span class="fstat-no" title="function not covered" >  async </span>login(req: Request, res: Response) {
-<span class="cstat-no" title="statement not covered" >    try {</span>
-      const parsedData = <span class="cstat-no" title="statement not covered" >LoginUserDTO.safeParse(req.body);</span>
-<span class="cstat-no" title="statement not covered" >      if (!parsedData.success) {</span>
-<span class="cstat-no" title="statement not covered" >        return res.status(400).json({</span>
-          success: false,
-          message: parsedData.error.issues.map(<span class="fstat-no" title="function not covered" >issue </span>=&gt; <span class="cstat-no" title="statement not covered" >issue.message)</span>,
-        });
-      }
-&nbsp;
-      const loginData = <span class="cstat-no" title="statement not covered" >parsedData.data;</span>
-      const { token, user } = <span class="cstat-no" title="statement not covered" >await userService.loginUser(loginData);</span>
-&nbsp;
-      //  Set cookie for isAdmin middleware
-<span class="cstat-no" title="statement not covered" >      res.cookie("auth_token", token, {</span>
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-      });
-&nbsp;
-<span class="cstat-no" title="statement not covered" >      return res.status(200).json({</span>
-        success: true,
-        message: "Login successful",
-        data: user,
-        token,
-      });
-    } catch (error: any) {
-<span class="cstat-no" title="statement not covered" >      return res.status(error.statusCode ?? 500).json({</span>
-        success: false,
-        message: error.message || "Internal Server Error",
-      });
-    }
+// Role-based guards
+export const isMember = <span class="fstat-no" title="function not covered" >(r</span>eq: Request, res: Response, next: NextFunction) =&gt; {
+<span class="cstat-no" title="statement not covered" >  if ((req as any).user?.role !== "member") {</span>
+<span class="cstat-no" title="statement not covered" >    return res.status(403).json({ success: false, message: "Access denied. Members only." });</span>
   }
-}
+<span class="cstat-no" title="statement not covered" >  next();</span>
+};
+&nbsp;
+export const isNurse = <span class="fstat-no" title="function not covered" >(r</span>eq: Request, res: Response, next: NextFunction) =&gt; {
+<span class="cstat-no" title="statement not covered" >  if ((req as any).user?.role !== "nurse") {</span>
+<span class="cstat-no" title="statement not covered" >    return res.status(403).json({ success: false, message: "Access denied. Nurses only." });</span>
+  }
+<span class="cstat-no" title="statement not covered" >  next();</span>
+};
+&nbsp;
+export const isAdmin = <span class="fstat-no" title="function not covered" >(r</span>eq: Request, res: Response, next: NextFunction) =&gt; {
+<span class="cstat-no" title="statement not covered" >  if ((req as any).user?.role !== "admin") {</span>
+<span class="cstat-no" title="statement not covered" >    return res.status(403).json({ success: false, message: "Access denied. Admins only." });</span>
+  }
+<span class="cstat-no" title="statement not covered" >  next();</span>
+};
+&nbsp;
+// ✅ Allow both members and nurses
+export const isMemberOrNurse = <span class="fstat-no" title="function not covered" >(r</span>eq: Request, res: Response, next: NextFunction) =&gt; {
+  const role = (<span class="cstat-no" title="statement not covered" >req as any).user?.role;</span>
+<span class="cstat-no" title="statement not covered" >  if (!["member", "nurse"].includes(role)) {</span>
+<span class="cstat-no" title="statement not covered" >    return res.status(403).json({</span>
+      success: false,
+      message: "Access denied. Members or Nurses only.",
+    });
+  }
+<span class="cstat-no" title="statement not covered" >  next();</span>
+};
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
