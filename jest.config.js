@@ -1,14 +1,14 @@
 module.exports = {
   preset: "ts-jest",
   testEnvironment: "node",
-  roots: ["<rootDir>/src"],
-  testMatch: ["**/__tests__/**/*.test.ts"],
-  setupFilesAfterEnv: ["<rootDir>/src/__tests__/setup.ts"],
+  roots: ["<rootDir>/src/__tests__"],
+  setupFilesAfterEnv: ["<rootDir>/src/test_utils/setup.ts"],
+  moduleFileExtensions: ["ts", "js", "json"],
   moduleNameMapper: {
-    "^uuid$": "<rootDir>/src/__mocks__/uuid.js",
-    "^../services/email.service$": "<rootDir>/src/__mocks__/email.service.ts"
+    "^../services/email.service$": "<rootDir>/src/__mocks__/email.service.ts",
+    "^../middlewares/upload.middleware$": "<rootDir>/src/__mocks__/upload.middleware.ts"
   },
-  transform: {
-    "^.+\\.ts$": "ts-jest"  
-  }
+  transformIgnorePatterns: ["node_modules/(?!(uuid)/)"],
+  coverageDirectory: "coverage",
+  collectCoverageFrom: ["src/**/*.ts", "!src/**/__tests__/**"]
 };

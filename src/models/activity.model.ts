@@ -12,7 +12,7 @@ const ActivitySchema = new Schema(
       default: "pending",
     },
 
-    // 🔎 Vital Signs
+    //  Vital Signs
     vitalSigns: {
       bloodPressure: String,
       heartRate: Number,
@@ -20,7 +20,7 @@ const ActivitySchema = new Schema(
       spo2: Number,
     },
 
-    // 🔎 Daily Care (ADLs)
+    //  Daily Care (ADLs)
     dailyCare: {
       meals: String,
       hydration: String,
@@ -29,7 +29,7 @@ const ActivitySchema = new Schema(
       sleepQuality: String,
     },
 
-    // 🔎 Medical Tracking
+    //  Medical Tracking
     medicalTracking: {
       medication: String,
       painLevel: Number,
@@ -37,7 +37,7 @@ const ActivitySchema = new Schema(
       bowelBladder: String,
     },
 
-    // 🔎 Collaboration
+    //  Collaboration
     collaboration: {
       suppliesInventory: String,
       shiftSummary: String,
@@ -45,7 +45,7 @@ const ActivitySchema = new Schema(
       significantEvents: String,
     },
 
-    // 🔎 Safety & Verification
+    //  Safety & Verification
     safetyVerification: {
       equipmentCheck: String,
       emergencyContactSync: Boolean,
