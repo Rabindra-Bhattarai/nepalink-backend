@@ -3,8 +3,17 @@ import { MongoMemoryServer } from "mongodb-memory-server";
 
 let mongoServer: MongoMemoryServer;
 
+// Increase Jest timeout globally for this test environment
+jest.setTimeout(30000); // 30 seconds
+
 beforeAll(async () => {
+  console.time("MongoMemoryServer startup");
+
+  // Create MongoMemoryServer with default options
   mongoServer = await MongoMemoryServer.create();
+
+  console.timeEnd("MongoMemoryServer startup");
+
   const uri = mongoServer.getUri();
   await mongoose.connect(uri, { dbName: "testdb" });
 });
@@ -18,5 +27,7 @@ afterEach(async () => {
 
 afterAll(async () => {
   await mongoose.connection.close();
-  await mongoServer.stop();
+  if (mongoServer) {
+    await mongoServer.stop();
+  }
 });

@@ -19,7 +19,7 @@ app.use(cors({
   origin: [
     "http://localhost:3001",        // web dev server
     "http://10.221.76.214:3001",     // local IP for web
-    "http://10.238.15.214:3000"      // physical device hitting API directly
+    "http://10.221.76.214:3000"      // physical device hitting API directly
   ],
   credentials: true
 }));

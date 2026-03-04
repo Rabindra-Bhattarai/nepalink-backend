@@ -23,7 +23,7 @@ export class ActivityRepository {
 
     return ActivityModel.find({ memberId: safeMemberId })
       .populate("nurseId", "name email role")
-      .populate("memberId", "name email role"); // ✅ ensure member info is populated too
+      .populate("memberId", "name email role"); //  ensure member info is populated too
   }
 
   async getActivitiesForNurse(nurseId: string): Promise<IActivity[]> {
@@ -33,6 +33,6 @@ export class ActivityRepository {
 
     return ActivityModel.find({ nurseId: safeNurseId })
       .populate("memberId", "name email role")
-      .populate("nurseId", "name email role"); // ✅ ensure nurse info is populated too
+      .populate("nurseId", "name email role"); //  ensure nurse info is populated too
   }
 }
